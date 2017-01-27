@@ -43,7 +43,7 @@ class QuestionViewTests(TestCase):
         """
         response = self.client.get(reverse("polls:index"))
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "No polls are available")
+        self.assertContains(response, "No polls are available.")
         self.assertQuerysetEqual(response.context["latest_question_list"], [])
 
     def test_index_view_with_a_past_question(self):
@@ -83,6 +83,7 @@ class QuestionViewTests(TestCase):
 
 
 class QuestionIndexDetailTests(TestCase):
+
     def test_detail_view_with_a_future_question(self):
         """
         The detail view of a question with a pub_date in the future should
@@ -102,3 +103,24 @@ class QuestionIndexDetailTests(TestCase):
         url = reverse("polls:detail", args=(past_question.id, ))
         response = self.client.get(url)
         self.assertContains(response, past_question.question_text)
+
+
+class QuestionResultsTest(TestCase):
+
+    def test_results_view_with_a_future_question(self):
+        """
+        The result view of a question which has not been published should return a 404 not found.
+        """
+        future_question = create_question(question_text="Future question.", days=30)
+        url = reverse("polls:results", args=(future_question.id, ))
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 404)
+
+    def test_results_view_with_a_past_question(self):
+        """
+        Result view of a past question should be published.
+        """
+        past_question = create_question(question_text="Past Question", days=-30)
+        url = reverse("polls:results", args=(past_question.id, ))
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
