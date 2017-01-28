@@ -1,7 +1,18 @@
 li a {
-    color:green;
+    color: green;
+    font-size: 20px;
+    font-family: verdana;
     }
 
 body {
     background: white url("images/background.jpg");
     }
+h1 {
+    color: green;
+    text-align: left;
+    font-family: verdana;
+    }
+p {
+    font-family: verdana;
+    font-size: 15px;
+}
